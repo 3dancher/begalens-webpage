@@ -1,14 +1,11 @@
+import ingLogo from '../../ing-logo.png'
+
 function Logo() {
   return (
     <a href="#top" className="flex items-center gap-2.5 pl-1.5">
-      <span className="grid h-8 w-8 place-items-center rounded-xl bg-slate-900 text-white">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m21 21-4.3-4.3" />
-        </svg>
-      </span>
+      <img src={ingLogo} alt="ING logo" className="h-8 w-8 object-contain" />
       <span className="text-[15px] font-semibold tracking-tight">
-        BeGa<span className="text-slate-400">Lens</span>
+        BeGa<span className="text-orange-500">Lens</span>
       </span>
     </a>
   )
@@ -17,7 +14,7 @@ function Logo() {
 const links = [
   { label: 'Categories', href: '#categories' },
   { label: 'How it works', href: '#how' },
-  { label: 'Pricing', href: '#' },
+
 ]
 
 export default function Navbar() {

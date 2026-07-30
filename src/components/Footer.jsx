@@ -1,3 +1,5 @@
+import ingLogo from '../../ing-logo.png'
+
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white">
@@ -16,9 +18,7 @@ export default function Footer() {
       <div className="border-t border-slate-100">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-slate-500 sm:flex-row">
           <div className="flex items-center gap-2">
-            <span className="grid h-6 w-6 place-items-center rounded-lg bg-slate-900 text-white">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-3.5 w-3.5"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-            </span>
+            <img src={ingLogo} alt="ING logo" className="h-6 w-6 object-contain" />
             <span className="font-medium text-slate-700">BeGaLens</span>
           </div>
           <p className="text-center text-xs text-slate-400">

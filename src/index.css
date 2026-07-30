@@ -1,7 +1,60 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "INGMeWeb";
+  src: url("../fonts/INGMeWeb-Regular.woff2") format("woff2"),
+       url("../fonts/INGMeWeb-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "INGMeWeb";
+  src: url("../fonts/INGMeWeb-Italic.woff2") format("woff2"),
+       url("../fonts/INGMeWeb-Italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "INGMeWeb";
+  src: url("../fonts/INGMeWeb-Bold.woff2") format("woff2"),
+       url("../fonts/INGMeWeb-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "INGDisplay";
+  src: url("../fonts/INGdisplay-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "INGDisplay";
+  src: url("../fonts/INGdisplay-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "INGDisplay";
+  src: url("../fonts/INGdisplay-ExBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-body: "INGMeWeb", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-heading: "INGDisplay", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
@@ -9,9 +62,17 @@
     scroll-behavior: smooth;
   }
   body {
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
   }
 }
 

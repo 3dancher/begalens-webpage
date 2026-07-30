@@ -1,28 +1,64 @@
 import { useEffect, useRef } from 'react'
+import bestuurMandatenImg from '../../category-screenshots/Bestuur-mandaten.png'
+import eindeVereffeningImg from '../../category-screenshots/Einde-Vereffening.png'
+import herstructureringImg from '../../category-screenshots/Herstructurering.png'
+import identiteitMaatschappelijkeZetelImg from '../../category-screenshots/Identiteit-Maatschappelijke-Zetel.png'
+import kapitaalAandelenImg from '../../category-screenshots/Kapitaal-aandelen.png'
+import maatschappelijkDoelImg from '../../category-screenshots/Maatschappelijk-Doel.png'
+import oprichtingImg from '../../category-screenshots/Oprichting.png'
+import statutenImg from '../../category-screenshots/Statuten.png'
 
 const categories = [
-  { title: 'Bestuur & Mandaten', desc: 'Appointments, resignations and mandates of directors and daily-management officers.' },
-  { title: 'Kapitaal & Aandelen', desc: 'Capital increases and decreases, share issuances, transfers and shareholder changes.' },
-  { title: 'Herstructurering', desc: 'Mergers, demergers, contributions and other restructuring operations.' },
-  { title: 'Oprichting', desc: 'Incorporations and the founding details of newly registered entities.' },
-  { title: 'Einde & Verheffing', desc: 'Dissolutions, closures and the winding-up of companies.' },
-  { title: 'Identiteit & Maantschappelijke Zetel', desc: 'Company name, legal form and registered-office relocations.' },
-  { title: 'Maatschappelijk doel', desc: 'Changes to the corporate purpose and scope of activities.' },
-  { title: 'Statuten & Signing powers', desc: 'Amendments to the articles of association and who can legally sign.' },
+  {
+    title: 'Bestuur & Mandaten',
+    desc: 'Appointments, resignations and mandates of directors and daily-management officers.',
+    image: bestuurMandatenImg,
+  },
+  {
+    title: 'Kapitaal & Aandelen',
+    desc: 'Capital increases and decreases, share issuances, transfers and shareholder changes.',
+    image: kapitaalAandelenImg,
+  },
+  {
+    title: 'Herstructurering',
+    desc: 'Mergers, demergers, contributions and other restructuring operations.',
+    image: herstructureringImg,
+  },
+  {
+    title: 'Oprichting',
+    desc: 'Incorporations and the founding details of newly registered entities.',
+    image: oprichtingImg,
+  },
+  {
+    title: 'Einde & Verheffing',
+    desc: 'Dissolutions, closures and the winding-up of companies.',
+    image: eindeVereffeningImg,
+  },
+  {
+    title: 'Identiteit & Maantschappelijke Zetel',
+    desc: 'Company name, legal form and registered-office relocations.',
+    image: identiteitMaatschappelijkeZetelImg,
+  },
+  {
+    title: 'Maatschappelijk doel',
+    desc: 'Changes to the corporate purpose and scope of activities.',
+    image: maatschappelijkDoelImg,
+  },
+  {
+    title: 'Statuten & Signing powers',
+    desc: 'Amendments to the articles of association and who can legally sign.',
+    image: statutenImg,
+  },
 ]
 
 // Scroll distance (vh) dedicated to each card. Card 0's slot is a hold (no slide-in
 // needed, it's the first thing shown); cards 1..N-1 each slide up over that budget.
 const CARD_VH = 100
 
-function ScreenshotPlaceholder() {
+function ScreenshotPreview({ src, alt }) {
   return (
-    <div className="flex flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" className="h-10 w-10 text-slate-300">
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <circle cx="9" cy="9" r="2" />
-        <path d="m21 15-3.6-3.6a2 2 0 0 0-2.8 0L6 20" />
-      </svg>
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-transparent p-[2px]">
+      <img src={src} alt={alt} className="max-h-full max-w-full rounded-[13px] object-contain object-center" />
     </div>
   )
 }
@@ -86,17 +122,17 @@ export default function BusinessCards() {
               <article
                 key={c.title}
                 ref={(el) => (cardsRef.current[i] = el)}
-                className="absolute inset-x-0 top-0 mx-auto flex h-[39vh] max-h-[300px] w-full max-w-5xl flex-col overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-md shadow-slate-900/5 will-change-transform sm:flex-row"
+                className="absolute inset-x-0 top-0 mx-auto flex h-[50vh] max-h-[430px] w-full max-w-6xl flex-col overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-md shadow-slate-900/5 will-change-transform sm:flex-row"
               >
-                <div className="flex flex-col justify-center gap-4 p-8 sm:w-[42%] sm:shrink-0 sm:p-12">
+                <div className="flex flex-col justify-center gap-4 p-8 sm:w-[36%] sm:shrink-0 sm:p-12">
                   <span className="text-sm font-medium tabular-nums text-slate-400">
                     {String(i + 1).padStart(2, '0')} / {categories.length}
                   </span>
                   <h3 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{c.title}</h3>
                   <p className="text-base leading-relaxed text-slate-500 sm:text-lg">{c.desc}</p>
                 </div>
-                <div className="flex flex-1 p-4 sm:p-6 sm:pl-0">
-                  <ScreenshotPlaceholder />
+                <div className="flex flex-1 overflow-hidden border-t border-slate-100 p-3 sm:border-t-0 sm:border-l sm:p-5">
+                  <ScreenshotPreview src={c.image} alt={`${c.title} category preview`} />
                 </div>
               </article>
             ))}

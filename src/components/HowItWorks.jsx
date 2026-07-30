@@ -44,7 +44,7 @@ export default function HowItWorks() {
             From portal maze to clear picture
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            The Belgian Gazette holds the answers — buried across scattered filings in three languages. BeGaLens
+            The Belgian Gazette holds the answers, buried across scattered filings in three languages. BeGaLens
             turns that maze into a searchable, business-level picture you and the model read together.
           </p>
         </div>
@@ -106,7 +106,7 @@ export default function HowItWorks() {
             <h3 className="mt-4 text-xl font-semibold tracking-tight text-slate-900">Dutch, French &amp; German</h3>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">
               Belgian filings arrive in all three languages. BeGaLens reads each natively and hands you one
-              consistent insight — no translation guesswork.
+              consistent insight, no translation guesswork.
             </p>
           </Card>
 
@@ -115,11 +115,11 @@ export default function HowItWorks() {
             <p className="text-xs font-semibold uppercase tracking-wider text-orange-600">Impact</p>
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div>
-                <div className="text-4xl font-semibold tracking-tight text-slate-900">2×</div>
+                <div className="text-4xl font-semibold tracking-tight text-slate-900">4×</div>
                 <div className="mt-1 text-sm text-slate-500">faster investigations</div>
               </div>
               <div>
-                <div className="text-4xl font-semibold tracking-tight text-slate-900">+150%</div>
+                <div className="text-4xl font-semibold tracking-tight text-slate-900">+300%</div>
                 <div className="mt-1 text-sm text-slate-500">throughput</div>
               </div>
             </div>
