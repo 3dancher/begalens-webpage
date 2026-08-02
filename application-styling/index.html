@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Belgian Gazette Lens</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen text-slate-900">
+    <div class="relative overflow-hidden">
+        <div class="hero-glow bg-orange-300 top-[-60px] left-[-40px]"></div>
+        <div class="hero-glow bg-blue-300 top-[100px] right-[-70px]"></div>
+        <div class="absolute inset-0 grid-bg pointer-events-none"></div>
+
+        <main class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+            <!-- Brand Area -->
+            <div class="mb-8 md:mb-12 fade-up">
+                <div class="flex flex-col gap-6">
+                    <div class="flex items-center justify-between gap-4 flex-wrap">
+                        <div class="flex items-center"><img src="ing-logo.png" alt="ING" class="h-20 md:h-20 w-auto object-contain"></div>
+                        <div class="flex items-center gap-2 text-xs md:text-sm text-slate-500">
+                            <span class="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1.5 border border-slate-200 shadow-sm">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                Data Quality & External Connections
+                            </span>
+                        </div>
+                    </div>
+
+                    <section class="glass rounded-[28px] p-6 md:p-10 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-white/50 via-white/20 to-orange-50/40 pointer-events-none"></div>
+                        <div class="relative max-w-3xl">
+                            <div class="inline-flex items-center gap-2 rounded-full badge px-3 py-1.5 text-xs font-semibold mb-5">
+                                Belgian Official Gazette · Legal Insights
+                            </div>
+                            <h1 class="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-tight">
+                                Belgian Gazette <span class="bg-gradient-to-r from-slate-900 via-slate-700 to-orange-600 bg-clip-text text-transparent pr-1">Lens</span>
+                            </h1>
+                            <p class="mt-4 text-base md:text-lg text-slate-600 max-w-2xl leading-relaxed">
+                                Extract and summarize legal related changes from Belgian Official Gazette publications, enter a CBE number to start analyzing. 
+                            </p>
+
+                            <div class="mt-8 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center">
+                                <div>
+                                    <label for="kboInput" class="block text-sm font-semibold text-slate-700 mb-2">Company number (KBO)</label>
+                                    <div class="input-ring flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/85 px-4 py-3 transition-all duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 6h16.5m-16.5 6h10.5" />
+                                        </svg>
+                                        <input type="text" id="kboInput" placeholder="Enter KBO (e.g., 0420968320)" class="w-full bg-transparent outline-none text-base md:text-lg text-slate-900 placeholder:text-slate-400"/>
+                                    </div>
+                                    <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                                        <span class="rounded-full bg-white/80 border border-slate-200 px-3 py-1">Direct PDF Analysis</span>
+                                        <span class="rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1">Parallel Processing</span>
+                                        <span class="rounded-full bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1">Smart Caching</span>
+                                    </div>
+                                </div>
+                                <button onclick="processKBO()" id="btn" class="btn-primary text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]">
+                                    Analyze
+                                </button>
+                            </div>
+
+                            <div id="timerWrap" class="mt-5 hidden-soft">
+                                <p id="timer" class="text-sm font-semibold text-orange-600 animate-pulse"></p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Streaming Results Interface -->
+            <section id="results" class="hidden space-y-6 mt-8">
+                <!-- Company Status / Insights -->
+                <div class="status-card rounded-[28px] p-6 md:p-8 fade-up">
+                    <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
+                        <div>
+                            <div class="inline-flex items-center gap-2 rounded-full bg-white/70 border border-orange-100 px-3 py-1 text-xs font-semibold text-orange-700 mb-4">Overview</div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Company Insights</h2>
+                        </div>
+                    </div>
+                    <div id="companyStatusContainer" class="mt-6 rounded-2xl bg-white/70 border border-slate-200 p-5 md:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 min-h-[140px] items-center">
+                        <!-- AI Loading Skeleton -->
+                        <div class="col-span-full flex items-center justify-center gap-3 text-slate-500">
+                            <div class="small-loader"></div> 
+                            <span class="font-medium tracking-wide">Waiting for data to compile company overview...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Publication History & Timeline Tabs -->
+                <div class="soft-card rounded-[28px] p-6 md:p-8 fade-up">
+                    <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+                        <div>
+                            <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 mb-3">Traceability</div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Publication History</h2>
+                            <p class="text-slate-500 mt-1">Live results streaming from Gemini directly from the original PDFs.</p>
+                        </div>
+                        <div id="docCount" class="rounded-2xl bg-white border border-slate-200 px-4 py-3 shadow-sm text-sm text-slate-600 font-medium hidden">
+                            0 documents
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="tab-navigation flex gap-2 mb-6 border-b border-slate-200 pb-1">
+                        <button id="tabPublications" onclick="switchTab('publications')" class="tab-btn tab-active px-5 py-2.5 rounded-t-xl font-semibold text-sm transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Publicaties
+                        </button>
+                        <button id="tabTimeline" onclick="switchTab('timeline')" class="tab-btn px-5 py-2.5 rounded-t-xl font-semibold text-sm transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Bestuurders Timeline
+                        </button>
+                    </div>
+                    
+                    <!-- Tab Content: Publications -->
+                    <div id="tabContentPublications" class="tab-content">
+                        <div id="pubList" class="space-y-4"></div>
+                    </div>
+                    
+                    <!-- Tab Content: Timeline -->
+                    <div id="tabContentTimeline" class="tab-content hidden">
+                        <div id="timelineLoading" class="flex items-center justify-center gap-3 text-slate-500 py-12">
+                            <div class="small-loader"></div>
+                            <span class="font-medium">Wachten op publicaties om timeline te genereren...</span>
+                        </div>
+                        
+                        <!-- Timeline Wrapper with ING styling -->
+                        <div id="timelineWrapper" class="space-y-4" style="display: none;">
+                            <!-- Timeline Header -->
+                            <div class="flex items-center justify-between px-1">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-800">Mandaat Overzicht</h3>
+                                    <p class="text-sm text-slate-500">Visuele weergave van bestuurdersperiodes op basis van publicaties</p>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Hover voor details</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Chart Container -->
+                            <div id="timelineChart" class="timeline-container"></div>
+                            
+                            <!-- Timeline Legend - Redesigned -->
+                            <div id="timelineLegend" class="flex flex-wrap items-center gap-6 text-sm">
+                                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold mr-2">Legenda:</span>
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
+                                    <span class="w-3 h-3 rounded-sm" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);"></span>
+                                    <span class="text-emerald-700 font-medium">Actief mandaat</span>
+                                </div>
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-100">
+                                    <span class="w-3 h-3 rounded-sm" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);"></span>
+                                    <span class="text-orange-700 font-medium">Beëindigd mandaat</span>
+                                </div>
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200">
+                                    <span class="w-3 h-3 rounded-sm spook-start-legend"></span>
+                                    <span class="text-slate-600 font-medium">Startdatum onbekend</span>
+                                </div>
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 ring-2 ring-blue-200"></span>
+                                    <span class="text-blue-700 font-medium">Herbenoeming</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="pdfModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300 flex">
+        <div class="bg-white rounded-[24px] shadow-2xl w-full max-w-[95vw] lg:max-w-7xl h-[90vh] flex flex-col lg:flex-row overflow-hidden relative transform scale-95 transition-transform duration-300" id="pdfModalContent">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full p-2 z-20 transition-colors shadow-sm focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div class="w-full lg:w-2/3 h-1/2 lg:h-full bg-slate-200 border-b lg:border-b-0 lg:border-r border-slate-300 relative">
+                <div class="absolute inset-0 flex items-center justify-center text-slate-400 -z-10"><div class="loader"></div></div>
+                <iframe id="modalIframe" src="" class="w-full h-full border-0 z-10 relative bg-white"></iframe>
+            </div>
+            <div class="w-full lg:w-1/3 h-1/2 lg:h-full p-6 lg:p-10 overflow-y-auto bg-slate-50">
+                <div class="flex items-center gap-3 mb-4 mt-2">
+                    <span id="modalDate" class="inline-flex items-center rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 border border-slate-200 shadow-sm"></span>
+                </div>
+                <h3 class="text-xs uppercase tracking-[0.16em] text-slate-400 font-semibold mb-2 mt-6">Onderwerp akte per rubriek</h3>
+                <div class="mb-8"><span id="modalSubject" class="badge rounded-full px-4 py-1.5 text-sm font-bold shadow-sm inline-block"></span></div>
+                
+                <!-- Title & TLDR from Pydantic Schema -->
+                <h3 id="modalTitle" class="text-xl md:text-2xl font-bold text-slate-900 mb-2 border-b border-slate-200 pb-2">Event Summary</h3>
+                <p id="modalTldr" class="text-slate-600 italic mb-6 text-sm"></p>
+                
+                <!-- Structured JSON injected here -->
+                <div id="modalStructuredContent" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const kboInput = document.getElementById('kboInput');
+        const btn = document.getElementById('btn');
+        const results = document.getElementById('results');
+        const timer = document.getElementById('timer');
+        const timerWrap = document.getElementById('timerWrap');
+        const companyStatusContainer = document.getElementById('companyStatusContainer');
+        const pubList = document.getElementById('pubList');
+        const docCount = document.getElementById('docCount');
+        const pdfModal = document.getElementById('pdfModal');
+        const pdfModalContent = document.getElementById('pdfModalContent');
+        const modalIframe = document.getElementById('modalIframe');
+        const modalStructuredContent = document.getElementById('modalStructuredContent');
+        const tabPublications = document.getElementById('tabPublications');
+        const tabTimeline = document.getElementById('tabTimeline');
+        const tabContentPublications = document.getElementById('tabContentPublications');
+        const tabContentTimeline = document.getElementById('tabContentTimeline');
+        const timelineChart = document.getElementById('timelineChart');
+        const timelineLoading = document.getElementById('timelineLoading');
+        const timelineLegend = document.getElementById('timelineLegend');
+        const timelineWrapper = document.getElementById('timelineWrapper');
+
+        let documentsProcessed = 0;
+        let startTime = 0;
+        let allPublications = []; // Store all publications for timeline
+        let companyInsightsData = null; // Store company insights for fallback date
+        let googleChartsLoaded = false;
+        let currentAnalyzedKbo = ''; // Stores the currently loaded KBO safely
+
+        // Load Google Charts
+        google.charts.load('current', {'packages':['timeline']});
+        google.charts.setOnLoadCallback(() => { googleChartsLoaded = true; });
+
+        // Tab switching
+        function switchTab(tab) {
+            if (tab === 'publications') {
+                tabPublications.classList.add('tab-active');
+                tabTimeline.classList.remove('tab-active');
+                tabContentPublications.classList.remove('hidden');
+                tabContentTimeline.classList.add('hidden');
+            } else {
+                tabPublications.classList.remove('tab-active');
+                tabTimeline.classList.add('tab-active');
+                tabContentPublications.classList.add('hidden');
+                tabContentTimeline.classList.remove('hidden');
+            }
+        }
+
+        // Build board member timeline from publications
+        function buildBoardMemberTimeline(publications, companyInsights) {
+            const boardMembers = new Map(); // key: personId, value: {periods: [], renewedDates: []}
+            
+            if (!publications || !Array.isArray(publications) || publications.length === 0) {
+                console.warn('No publications provided to buildBoardMemberTimeline');
+                return boardMembers;
+            }
+            
+            console.log('Building timeline from', publications.length, 'publications');
+            
+            // Parse date string to Date object
+            const parseDate = (dateStr) => {
+                if (!dateStr || typeof dateStr !== 'string') return null;
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1;
+                    const year = parseInt(parts[2], 10);
+                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        return new Date(year, month, day);
+                    }
+                }
+                return null;
+            };
+            
+            // Sort publications from oldest to newest
+            const sortedPubs = [...publications].sort((a, b) => {
+                const dateA = parseDate(a.date) || new Date(0);
+                const dateB = parseDate(b.date) || new Date(0);
+                return dateA - dateB;
+            });
+            
+            // Fallback start date (company establishment or earliest publication)
+            let fallbackStartDate = parseDate(companyInsights?.date_established);
+            if (!fallbackStartDate && sortedPubs.length > 0) {
+                fallbackStartDate = parseDate(sortedPubs[0].date);
+            }
+            if (!fallbackStartDate) {
+                fallbackStartDate = new Date(2000, 0, 1); // Default fallback
+            }
+            
+            // Process each publication
+            sortedPubs.forEach(pub => {
+                const pubDate = parseDate(pub.date);
+                if (!pubDate || !pub.mandate_changes) return;
+                
+                pub.mandate_changes.forEach(mandate => {
+                    console.log('Processing mandate:', mandate.action, mandate.permanent_representative || mandate.entity_name, mandate.role);
+                    
+                    // Create unique person identifier - skip if no valid role
+                    const personName = mandate.permanent_representative || mandate.entity_name || 'Onbekend';
+                    const entityName = mandate.entity_name || '';
+                    const role = mandate.role || 'Onbekende rol';
+                    const personId = `${personName}::${role}`;
+                    
+                    if (!boardMembers.has(personId)) {
+                        boardMembers.set(personId, {
+                            personName,
+                            entityName,
+                            role: role,
+                            periods: [],
+                            renewedDates: []
+                        });
+                    }
+                    
+                    const member = boardMembers.get(personId);
+                    
+                    // Normalize action to uppercase for comparison
+                    const action = (mandate.action || '').toUpperCase().trim();
+                    
+                    if (action === 'IN') {
+                        // Start new period
+                        member.periods.push({
+                            start: pubDate,
+                            end: null,
+                            startKnown: true,
+                            isActive: true
+                        });
+                        console.log('  -> Started new period');
+                    } else if (action === 'OUT') {
+                        // Find open period and close it
+                        const openPeriod = member.periods.find(p => p.end === null);
+                        if (openPeriod) {
+                            openPeriod.end = pubDate;
+                            openPeriod.isActive = false;
+                            console.log('  -> Closed existing period');
+                        } else {
+                            // Spook-start: OUT without IN
+                            member.periods.push({
+                                start: fallbackStartDate,
+                                end: pubDate,
+                                startKnown: false,
+                                isActive: false
+                            });
+                            console.log('  -> Created spook-start period');
+                        }
+                    } else if (action === 'RENEWED') {
+                        // Add renewed marker
+                        member.renewedDates.push(pubDate);
+                        console.log('  -> Added renewed date');
+                    } else {
+                        console.log('  -> Unknown action:', action);
+                    }
+                });
+            });
+            
+            // Close active periods with today's date
+            const today = new Date();
+            boardMembers.forEach(member => {
+                member.periods.forEach(period => {
+                    if (period.end === null) {
+                        period.end = today;
+                        period.isActive = true;
+                    }
+                });
+            });
+            
+            console.log('Board members built:', Array.from(boardMembers.entries()));
+            
+            return boardMembers;
+        }
+
+        // Render timeline using Google Charts
+        function renderBoardTimeline(boardMembers) {
+            if (!googleChartsLoaded || !google.visualization || !google.visualization.Timeline) {
+                console.warn('Google Charts Timeline not loaded yet, retrying in 500ms...');
+                setTimeout(() => renderBoardTimeline(boardMembers), 500);
+                return;
+            }
+            
+            console.log('Rendering timeline with', boardMembers.size, 'board members');
+            
+            if (boardMembers.size === 0) {
+                timelineLoading.innerHTML = '<span class="text-slate-500 font-medium">Geen mandaatwijzigingen gevonden in de publicaties.</span>';
+                return;
+            }
+            
+            // FIX: Force the timeline tab to be visible BEFORE drawing
+            // Google Charts cannot render in a hidden container
+            const wasHidden = tabContentTimeline.classList.contains('hidden');
+            if (wasHidden) {
+                // Temporarily make visible but invisible to user
+                tabContentTimeline.classList.remove('hidden');
+                tabContentTimeline.style.opacity = '0';
+                tabContentTimeline.style.pointerEvents = 'none';
+            }
+            
+            timelineLoading.style.display = 'none';
+            timelineWrapper.style.display = 'block';
+            timelineChart.style.minHeight = '350px';
+            
+            const container = timelineChart;
+            const chart = new google.visualization.Timeline(container);
+            const dataTable = new google.visualization.DataTable();
+            
+            // Google Charts Timeline: simple 4-column format
+            dataTable.addColumn('string', 'Persoon');
+            dataTable.addColumn('string', 'Status');
+            dataTable.addColumn('date', 'Start');
+            dataTable.addColumn('date', 'Einde');
+            
+            const rows = [];
+            // Track unique status values in order of first appearance
+            const uniqueStatuses = [];
+            // ING-style softer colors with gradient-like appearance
+            const statusColorMap = {
+                'Actief': '#059669',         // Deeper emerald - more sophisticated
+                'Beëindigd': '#ea580c',      // Warmer orange - ING brand adjacent  
+                'Onbekende start': '#64748b' // Softer slate - less harsh
+            };
+            
+            boardMembers.forEach((member, personId) => {
+                const displayName = member.entityName && member.entityName !== member.personName 
+                    ? `${member.personName} (${member.entityName})`
+                    : member.personName;
+                const rowLabel = `${displayName} - ${member.role}`;
+                
+                console.log(`Processing ${rowLabel} with ${member.periods.length} periods`);
+                
+                member.periods.forEach((period, idx) => {
+                    // Validate dates - skip invalid periods
+                    const isValidDate = (d) => d && d instanceof Date && !isNaN(d.getTime());
+                    
+                    if (!isValidDate(period.start) || !isValidDate(period.end)) {
+                        return;
+                    }
+                    
+                    // Ensure start is before end
+                    if (period.start > period.end) {
+                        return;
+                    }
+                    
+                    // Determine status text based on period properties
+                    let statusText;
+                    if (!period.startKnown) {
+                        statusText = 'Onbekende start';
+                    } else if (period.isActive) {
+                        statusText = 'Actief';
+                    } else {
+                        statusText = 'Beëindigd';
+                    }
+                    
+                    // Track unique statuses in order of appearance
+                    if (!uniqueStatuses.includes(statusText)) {
+                        uniqueStatuses.push(statusText);
+                    }
+                    
+                    // Clone dates for Google Charts (it modifies the objects)
+                    const startDate = new Date(period.start.getTime());
+                    let endDate = new Date(period.end.getTime());
+                    
+                    // FIX: Ensure minimum 1 day duration to prevent "datefield" crash
+                    const minDuration = 24 * 60 * 60 * 1000; // 1 day in ms
+                    if (endDate.getTime() - startDate.getTime() < minDuration) {
+                        endDate = new Date(startDate.getTime() + minDuration);
+                    }
+                    
+                    rows.push([
+                        rowLabel,
+                        statusText,
+                        startDate,
+                        endDate
+                    ]);
+                    console.log('  -> Added row successfully');
+                });
+            });
+            
+            // Build colors array in exact order of unique status appearance
+            const colorsArray = uniqueStatuses.map(status => statusColorMap[status] || '#64748b');
+            console.log('Unique statuses:', uniqueStatuses);
+            console.log('Colors array:', colorsArray);
+            
+            console.log('Timeline rows:', rows);
+            console.log('Row details:', rows.map(r => ({
+                label: r[0],
+                status: r[1],
+                start: r[2].toISOString(),
+                end: r[3].toISOString(),
+                durationDays: Math.round((r[3] - r[2]) / (24*60*60*1000))
+            })));
+            
+            if (rows.length === 0) {
+                timelineLoading.innerHTML = '<span class="text-slate-500 font-medium">Geen geldige mandaatperiodes gevonden in de publicaties.</span>';
+                timelineLoading.style.display = 'flex';
+                timelineWrapper.style.display = 'none';
+                return;
+            }
+            
+            // Add rows one by one for better error handling
+            rows.forEach((row, idx) => {
+                try {
+                    dataTable.addRow(row);
+                } catch (e) {
+                    console.error(`Error adding row ${idx}:`, row, e);
+                }
+            });
+            
+            const options = {
+                timeline: {
+                    showRowLabels: true,
+                    colorByRowLabel: false,
+                    groupByRowLabel: true,
+                    rowLabelStyle: {
+                        fontName: 'ING Me, Arial, sans-serif',
+                        fontSize: 12,
+                        color: '#1e293b',
+                        bold: false
+                    },
+                    barLabelStyle: {
+                        fontName: 'ING Me, Arial, sans-serif',
+                        fontSize: 10
+                    }
+                },
+                colors: colorsArray,
+                backgroundColor: 'transparent',
+                avoidOverlappingGridLines: true,
+                tooltip: { 
+                    isHtml: true,
+                    textStyle: {
+                        fontName: 'ING Me, Arial, sans-serif',
+                        fontSize: 12,
+                        color: '#334155'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        fontName: 'ING Me, Arial, sans-serif',
+                        fontSize: 11,
+                        color: '#64748b'
+                    },
+                    gridlines: {
+                        color: 'rgba(226, 232, 240, 0.5)'
+                    }
+                }
+            };
+            
+            // FIX: Ensure container has explicit dimensions before drawing
+            // More breathing room per row for ING style
+            const chartHeight = Math.max(350, rows.length * 50 + 100);
+            container.style.height = chartHeight + 'px';
+            container.style.width = '100%';
+            container.style.minWidth = '600px';
+            
+            try {
+                chart.draw(dataTable, options);
+                console.log('Chart drawn successfully');
+            } catch (e) {
+                console.error('Google Charts draw error:', e);
+                console.log('DataTable columns:', dataTable.getNumberOfColumns());
+                console.log('DataTable rows:', dataTable.getNumberOfRows());
+                for (let i = 0; i < dataTable.getNumberOfRows(); i++) {
+                    console.log(`Row ${i}:`, dataTable.getValue(i, 0), dataTable.getValue(i, 1), dataTable.getValue(i, 2), dataTable.getValue(i, 3));
+                }
+                timelineWrapper.style.display = 'none';
+                timelineLoading.innerHTML = `<span class="text-red-500 font-medium">Fout bij het renderen van de timeline: ${e.message}</span>`;
+                timelineLoading.style.display = 'flex';
+            }
+            
+            // FIX: Restore visibility state after drawing
+            if (wasHidden) {
+                tabContentTimeline.style.opacity = '';
+                tabContentTimeline.style.pointerEvents = '';
+                tabContentTimeline.classList.add('hidden');
+            }
+            
+            // Add RENEWED markers overlay
+            setTimeout(() => {
+                addRenewedMarkers(boardMembers, chart, container);
+            }, 100);
+        }
+
+        // Add visual markers for RENEWED events
+        function addRenewedMarkers(boardMembers, chart, container) {
+            // Remove existing markers
+            container.querySelectorAll('.renewed-marker').forEach(el => el.remove());
+            
+            // Note: Google Charts Timeline doesn't easily support overlays
+            // The RENEWED info is shown in tooltips instead
+            // If more visual prominence is needed, consider custom SVG overlay
+        }
+
+        kboInput.addEventListener('keydown', e => { if (e.key === 'Enter') processKBO(); });
+
+        function resetUIForRun() {
+            btn.disabled = true;
+            btn.innerText = 'Connecting...';
+            results.classList.remove('hidden');
+            
+            timerWrap.classList.remove('hidden-soft');
+            timerWrap.classList.add('show-soft');
+            timer.innerText = 'Initializing...';
+
+            pubList.innerHTML = '';
+            documentsProcessed = 0;
+            docCount.classList.add('hidden');
+            docCount.innerText = '0 documents';
+            
+            // Reset timeline
+            allPublications = [];
+            companyInsightsData = null;
+            timelineWrapper.style.display = 'none';
+            timelineChart.innerHTML = ''; // Clear previous chart
+            timelineLoading.innerHTML = `
+                <div class="small-loader"></div>
+                <span class="font-medium">Wachten op publicaties om timeline te genereren...</span>`;
+            timelineLoading.style.display = 'flex';
+            switchTab('publications');
+            
+            companyStatusContainer.innerHTML = `
+                <div class="col-span-full flex items-center justify-center gap-3 text-slate-500 py-6">
+                    <div class="small-loader"></div> 
+                    <span class="font-medium tracking-wide">Waiting for data to compile company overview...</span>
+                </div>`;
+                
+            startTime = Date.now();
+        }
+
+        function restoreUIAfterRun() {
+            btn.disabled = false;
+            btn.innerText = 'Analyze';
+            timer.classList.remove('text-orange-600', 'animate-pulse');
+            timer.classList.add('text-slate-500');
+        }
+
+        function parseDateString(dateStr) {
+            if (!dateStr) return 0;
+            const split = dateStr.split('/');
+            if (split.length === 3) {
+                return new Date(split[2], split[1] - 1, split[0]).getTime();
+            }
+            return 0;
+        }
+
+        function createPubElement(pub) {
+            const item = document.createElement('div');
+            item.className = "publication-item rounded-2xl border border-slate-200 bg-white/80 p-5 md:p-6 cursor-pointer group fade-up";
+            item.dataset.time = parseDateString(pub.date);
+
+            item.onclick = () => openModal(pub);
+
+            item.innerHTML = `
+                <div class="flex items-start gap-4">
+                    <div class="shrink-0">
+                        <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 text-white flex items-center justify-center shadow-sm group-hover:from-orange-500 group-hover:to-orange-700 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-8.25a2.25 2.25 0 0 0-2.25-2.25h-8.25A2.25 2.25 0 0 0 6.75 6v12a2.25 2.25 0 0 0 2.25 2.25h5.25" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 21l4.5-4.5m0 0-4.5-4.5m4.5 4.5H12" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-3 flex-wrap mb-2">
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 border border-slate-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                ${pub.date || 'No Date'}
+                            </span>
+                            <span class="badge rounded-full px-2.5 py-1 text-xs font-semibold lowercase">${pub.primary_subject || 'Publication'}</span>
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500 border border-slate-200 ml-auto group-hover:bg-orange-100 group-hover:text-orange-700 transition-colors">
+                                View PDF &rarr;
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-baseline gap-2 mb-1">
+                            <h3 class="text-lg font-bold text-slate-900">${pub.title || 'Official Publication'}</h3>
+                        </div>
+                        
+                        <p class="text-slate-600 mt-1 leading-6 line-clamp-2">${pub.tldr_summary || 'Geen samenvatting beschikbaar.'}</p>
+                    </div>
+                </div>
+            `;
+            return item;
+        }
+
+        function appendAndSortPublication(pub) {
+            const el = createPubElement(pub);
+            pubList.appendChild(el);
+            documentsProcessed++;
+            
+            docCount.innerText = `${documentsProcessed} document${documentsProcessed === 1 ? '' : 's'}`;
+            docCount.classList.remove('hidden');
+
+            const items = Array.from(pubList.children);
+            items.sort((a, b) => b.dataset.time - a.dataset.time);
+            items.forEach(node => pubList.appendChild(node));
+        }
+
+        function renderCompanyInsights(insights) {
+            const legalStatusText = insights?.legal_status
+                ? `${insights.legal_status}${insights?.legal_status_since ? ` • Sinds ${insights.legal_status_since}` : ''}`
+                : '';
+
+            const fields = [
+                { label: 'KBO', value: insights?.kbo_number, valueClass: 'text-lg md:text-xl font-bold text-slate-900' },
+                { label: 'Vestigingsnummer', value: insights?.establishment_number, valueClass: 'text-lg font-medium text-slate-700' },
+                { label: 'Rechtsvorm', value: insights?.legal_form, valueClass: 'text-lg font-medium text-slate-700' },
+                { label: 'BTW-nummer', value: insights?.vat_number, valueClass: 'text-lg font-medium text-slate-700' },
+                { label: 'EUID', value: insights?.euid, valueClass: 'text-base font-medium text-slate-700 break-all' },
+                { label: 'Juridische situatie', value: legalStatusText, valueClass: 'text-lg font-medium text-slate-700' },
+                { label: 'Maatschappelijk kapitaal', value: insights?.share_capital_eur ? `EUR ${insights.share_capital_eur}` : '', valueClass: 'text-lg font-medium text-slate-700' },
+                { label: 'Bedrijfsnaam', value: insights?.company_name, valueClass: 'text-lg md:text-xl font-bold text-slate-900' },
+                { label: 'Huidige wettelijke vertegenwoordiging', value: insights?.current_legal_representative, valueClass: 'text-lg font-medium text-slate-700' }
+            ];
+
+            const visibleFields = fields.filter((f) => {
+                if (f.value === null || f.value === undefined) return false;
+                const text = String(f.value).trim();
+                return text.length > 0;
+            });
+
+            companyStatusContainer.className = 'mt-6 rounded-2xl bg-white/70 border border-slate-200 p-5 md:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[140px]';
+
+            if (visibleFields.length === 0) {
+                companyStatusContainer.innerHTML = `
+                    <div class="col-span-full flex items-center justify-center text-slate-500 py-6">
+                        <span class="font-medium tracking-wide">Nog geen bruikbare bedrijfsinzichten beschikbaar.</span>
+                    </div>`;
+                return;
+            }
+
+            companyStatusContainer.innerHTML = visibleFields
+                .map((field, idx) => `
+                    <div class="flex flex-col gap-1 fade-up" style="animation-delay: ${idx * 0.05}s;">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">${field.label}</span>
+                        <span class="${field.valueClass}">${field.value}</span>
+                    </div>
+                `)
+                .join('');
+        }
+
+        // --- DYNAMIC HTML BUILDER FOR Pydantic JSON ---
+        function buildStructuredHTML(pub) {
+            let html = '';
+
+            // Helper to create a styled block matching the ING aesthetic
+            const wrapBlock = (title, content, bgColor = "bg-white", borderColor = "border-slate-200", titleColor="text-slate-500") => `
+                <div class="rounded-2xl border ${borderColor} ${bgColor} p-5 shadow-sm">
+                    <h4 class="text-xs uppercase tracking-widest font-bold ${titleColor} mb-3 pb-2 border-b ${borderColor}">${title}</h4>
+                    ${content}
+                </div>`;
+
+            // 1. Mandates
+            if (pub.mandate_changes && pub.mandate_changes.length > 0) {
+                let content = `<div class="space-y-3">`;
+                pub.mandate_changes.forEach(m => {
+                    let badge = m.action === 'IN' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 
+                               (m.action === 'OUT' ? 'bg-red-100 text-red-700 border-red-200' : 'bg-blue-100 text-blue-700 border-blue-200');
+                    let name = m.entity_name ? `<span class="font-bold text-slate-800">${m.entity_name}</span> <span class="text-sm text-slate-500">(Vertegenwoordiger: ${m.permanent_representative || 'N/A'})</span>` 
+                                             : `<span class="font-bold text-slate-800">${m.permanent_representative || 'N/A'}</span>`;
+                    content += `
+                        <div class="flex items-start gap-3">
+                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${badge} mt-0.5">${m.action}</span>
+                            <div>
+                                ${name}
+                                <p class="text-sm text-slate-500">${m.role} ${m.term ? `&middot; ${m.term}` : ''}</p>
+                            </div>
+                        </div>`;
+                });
+                content += `</div>`;
+                html += wrapBlock("Bestuur & Mandaten", content);
+            }
+
+            // 2. Capital
+            if (pub.capital_and_shares_changes && Object.keys(pub.capital_and_shares_changes).length > 0) {
+                let cap = pub.capital_and_shares_changes;
+                let content = ``;
+                if (cap.action) content += `<p class="font-bold text-slate-800 mb-2 capitalize">${cap.action}</p>`;
+                if (cap.change_amount_eur) content += `<p class="text-sm text-slate-700"><strong>Wijziging:</strong> € ${cap.change_amount_eur}</p>`;
+                if (cap.new_total_capital_eur) content += `<p class="text-sm text-slate-700 font-bold mt-1">Nieuw Totaal Kapitaal: € ${cap.new_total_capital_eur}</p>`;
+                if (cap.new_total_shares) content += `<p class="text-sm text-slate-500">Totaal aandelen: ${cap.new_total_shares}</p>`;
+                if (cap.summary) content += `<p class="text-sm text-slate-500 italic mt-3">${cap.summary}</p>`;
+                html += wrapBlock("Kapitaal & Aandelen", content);
+            }
+
+            // 3. Restructuring
+            if (pub.restructuring_events && Object.keys(pub.restructuring_events).length > 0) {
+                let r = pub.restructuring_events;
+                let content = `<p class="font-bold text-orange-800 mb-3">${r.type}</p>`;
+                
+                if (r.transferring_entities && r.transferring_entities.length > 0) {
+                    content += `<p class="text-sm text-slate-600 font-bold">Verdwijnende/Splitsende partij(en):</p><ul class="list-disc ml-5 text-sm text-slate-700 mb-2">`;
+                    r.transferring_entities.forEach(e => content += `<li>${e}</li>`);
+                    content += `</ul>`;
+                }
+                if (r.receiving_entities && r.receiving_entities.length > 0) {
+                    content += `<p class="text-sm text-emerald-700 font-bold mt-2">Verkrijgende/Nieuwe partij(en):</p><ul class="list-disc ml-5 text-sm text-slate-700">`;
+                    r.receiving_entities.forEach(e => content += `<li>${e}</li>`);
+                    content += `</ul>`;
+                }
+                if (r.summary) content += `<div class="mt-4 p-3 bg-white rounded-xl border border-orange-100 text-sm text-slate-700">${r.summary}</div>`;
+                html += wrapBlock("Herstructurering", content, "bg-orange-50", "border-orange-200", "text-orange-600");
+            }
+
+            // 4. Incorporation
+            if (pub.incorporation_details && Object.keys(pub.incorporation_details).length > 0) {
+                let inc = pub.incorporation_details;
+                let content = `<p class="font-bold text-lg text-blue-900">${inc.company_name}</p>
+                               <p class="text-sm text-blue-700">${inc.legal_form} &middot; ${inc.registered_seat}</p>
+                               <p class="text-sm text-blue-700 mt-1">Startkapitaal: € ${inc.initial_capital_eur || 'Onbekend'}</p>`;
+                if (inc.founders && inc.founders.length > 0) {
+                    content += `<p class="text-sm font-bold text-blue-900 mt-4 mb-2">Oprichters:</p><div class="space-y-2">`;
+                    inc.founders.forEach(f => {
+                        content += `<div class="bg-white p-3 rounded-xl border border-blue-100 text-sm shadow-sm">
+                                        <strong>${f.name}</strong> ${f.birth_date ? `<span class="text-slate-400 ml-1">(°${f.birth_date})</span>` : ''} 
+                                        <div class="text-slate-500 mt-0.5">${f.address || ''}</div>
+                                    </div>`;
+                    });
+                    content += `</div>`;
+                }
+                html += wrapBlock("Oprichting", content, "bg-blue-50", "border-blue-200", "text-blue-600");
+            }
+
+            // 5. Liquidation
+            if (pub.liquidation_and_closure && Object.keys(pub.liquidation_and_closure).length > 0) {
+                let liq = pub.liquidation_and_closure;
+                let content = `<p class="font-bold text-red-700 text-lg mb-2">${liq.status}</p>`;
+                if (liq.liquidator) {
+                    content += `<p class="text-sm text-slate-800"><strong>Vereffenaar:</strong> ${liq.liquidator.name}</p>`;
+                    if (liq.liquidator.address) content += `<p class="text-xs text-slate-500">${liq.liquidator.address}</p>`;
+                }
+                if (liq.books_storage_address) content += `<p class="text-sm text-slate-800 mt-3"><strong>Bewaarplaats boeken:</strong><br><span class="text-slate-600">${liq.books_storage_address}</span></p>`;
+                html += wrapBlock("Einde & Vereffening", content, "bg-red-50", "border-red-200", "text-red-600");
+            }
+
+            // 6. Identity & Seat
+            if (pub.identity_changes && Object.keys(pub.identity_changes).length > 0) {
+                html += wrapBlock("Nieuwe Naam", `<p class="font-bold text-lg text-slate-800">${pub.identity_changes.new_name_full || pub.identity_changes.new_name_short}</p>`);
+            }
+            if (pub.registered_seat_changes && Object.keys(pub.registered_seat_changes).length > 0) {
+                let content = `<p class="font-bold text-slate-800">${pub.registered_seat_changes.new_address}</p>`;
+                if(pub.registered_seat_changes.effective_date) content += `<p class="text-xs text-slate-500 mt-1">Vanaf: ${pub.registered_seat_changes.effective_date}</p>`;
+                html += wrapBlock("Nieuwe Maatschappelijke Zetel", content);
+            }
+            if (pub.legal_form_changes && Object.keys(pub.legal_form_changes).length > 0) {
+                html += wrapBlock("Nieuwe Rechtsvorm", `<p class="font-bold text-slate-800">${pub.legal_form_changes.new_form}</p>`);
+            }
+
+            // 7. Purpose
+            if (pub.purpose_changes && Object.keys(pub.purpose_changes).length > 0) {
+                let content = ``;
+                if(pub.purpose_changes.specific_changes) content += `<p class="text-sm text-slate-500 italic mb-3">${pub.purpose_changes.specific_changes}</p>`;
+                if(pub.purpose_changes.new_core_activities && pub.purpose_changes.new_core_activities.length > 0) {
+                    content += `<ul class="list-disc ml-4 text-sm text-slate-700 space-y-1">`;
+                    pub.purpose_changes.new_core_activities.forEach(a => content += `<li>${a}</li>`);
+                    content += `</ul>`;
+                }
+                html += wrapBlock("Maatschappelijk Doel", content);
+            }
+
+            // 8. Statutes & Misc
+            if (pub.statute_changes && (pub.statute_changes.compliance_wvv_csa || pub.statute_changes.full_coordination)) {
+                let content = `<div class="flex gap-2 mb-3">
+                                  ${pub.statute_changes.compliance_wvv_csa ? '<span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded text-xs font-bold border border-emerald-200">✓ WVV/CSA Compliant</span>' : ''}
+                                  ${pub.statute_changes.full_coordination ? '<span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold border border-indigo-200">✓ Gecoördineerd</span>' : ''}
+                               </div>`;
+                if (pub.statute_changes.specific_governance_changes && pub.statute_changes.specific_governance_changes.length > 0) {
+                    content += `<p class="text-sm font-bold text-slate-700 mb-1">Afwijkende regels:</p><ul class="list-disc ml-4 text-sm text-slate-600 space-y-1">`;
+                    pub.statute_changes.specific_governance_changes.forEach(s => content += `<li>${s}</li>`);
+                    content += `</ul>`;
+                }
+                html += wrapBlock("Statuten", content);
+            }
+
+            if (html === '') {
+                html = `<p class="text-slate-500 italic px-2">Geen specifieke gestructureerde data gevonden, of betreft een algemene publicatie.</p>`;
+            }
+
+            return html;
+        }
+
+        function openModal(pub) {
+            // Proxy the PDF securely through your own Python backend
+            const securePdfUrl = `http://localhost:8080/?kbo=${currentAnalyzedKbo}&pdf=${pub.filename}`;
+            modalIframe.src = securePdfUrl;
+            
+            document.getElementById('modalDate').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> ${pub.date || 'Unknown Date'}`;
+            document.getElementById('modalSubject').innerText = pub.primary_subject || 'N/A';
+            document.getElementById('modalTitle').innerText = pub.title || 'Publication';
+            document.getElementById('modalTldr').innerText = pub.tldr_summary || '';
+            
+            modalStructuredContent.innerHTML = buildStructuredHTML(pub);
+
+            pdfModal.classList.remove('opacity-0', 'pointer-events-none');
+            pdfModalContent.classList.remove('scale-95');
+            pdfModalContent.classList.add('scale-100');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeModal() {
+            pdfModal.classList.add('opacity-0', 'pointer-events-none');
+            pdfModalContent.classList.remove('scale-100');
+            pdfModalContent.classList.add('scale-95');
+            document.body.classList.remove('modal-active');
+            setTimeout(() => { modalIframe.src = ''; }, 300);
+        }
+
+        pdfModal.addEventListener('click', e => { if(e.target === pdfModal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && !pdfModal.classList.contains('opacity-0')) closeModal(); });
+
+        async function processKBO() {
+            const kbo = kboInput.value.trim();
+            if (!kbo) { alert("Please enter a KBO number first."); return; }
+            
+            // Store it globally so the PDF proxy always knows which folder to check
+            currentAnalyzedKbo = kbo;
+
+            resetUIForRun();
+
+            try {
+                const response = await fetch('http://localhost:8080/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kbo: kbo })
+                });
+
+                if (!response.body) throw new Error("ReadableStream not supported by the browser.");
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const chunks = buffer.split('\n\n');
+                    buffer = chunks.pop(); 
+
+                    for (const chunk of chunks) {
+                        if (chunk.startsWith('data: ')) {
+                            try {
+                                const parsed = JSON.parse(chunk.replace('data: ', ''));
+                                
+                                if (parsed.status) {
+                                    timer.innerText = parsed.status;
+                                } 
+                                else if (parsed.type === 'doc_result') {
+                                    appendAndSortPublication(parsed.doc);
+                                    allPublications.push(parsed.doc);
+                                } 
+                                else if (parsed.type === 'complete') {
+                                    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+                                    timer.innerText = `Finished in ${duration}s.`;
+                                    
+                                    companyInsightsData = parsed.data.company_insights;
+                                    renderCompanyInsights(parsed.data.company_insights);
+                                    
+                                    if (documentsProcessed === 0 && parsed.data.publications) {
+                                        parsed.data.publications.forEach(pub => {
+                                            appendAndSortPublication(pub);
+                                            allPublications.push(pub);
+                                        });
+                                    }
+                                    
+                                    // Build and render timeline
+                                    const boardTimeline = buildBoardMemberTimeline(allPublications, companyInsightsData);
+                                    renderBoardTimeline(boardTimeline);
+                                } 
+                                else if (parsed.error) {
+                                    throw new Error(parsed.error);
+                                }
+                            } catch (err) {
+                                console.error('Stream Parsing Error:', err, chunk);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                timer.innerText = 'Processing failed.';
+                companyStatusContainer.innerHTML = `<p class="text-red-500 font-semibold">Backend Error: ${err.message}</p>`;
+            } finally {
+                restoreUIAfterRun();
+            }
+        }
+    </script>
+</body>
+</html>
