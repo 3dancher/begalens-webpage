@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belgian Gazette Lens - UI Cards Preview</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+<style>
+        /* Load local fonts from the project's fonts directory */
+        @font-face {
+            font-family: 'ING Display';
+            src: url('./fonts/INGdisplay-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ING Display';
+            src: url('./fonts/INGdisplay-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ING Me';
+            src: url('./fonts/INGMeWeb-Regular.woff2') format('woff2'),
+                 url('./fonts/INGMeWeb-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'ING Me';
+            src: url('./fonts/INGMeWeb-Bold.woff2') format('woff2'),
+                 url('./fonts/INGMeWeb-Bold.woff') format('woff');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --ing-orange: #f86a18;
+            --ing-orange-dark: #e85b08;
+            --ink: #0f172a;
+        }
+
+        body {
+            /* Fallback to system fonts if the files aren't found */
+            font-family: 'ING Me', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(248, 106, 24, 0.08), transparent 22%),
+                radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.06), transparent 24%),
+                linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+        }
+
+        h1, h2, h3, h4 { 
+            font-family: 'ING Display', -apple-system, BlinkMacSystemFont, sans-serif; 
+        }
+
+        /* Rest of the cards styling */
+        .glass {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+        }
+
+        .soft-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78));
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+        }
+
+        .badge { 
+            background: rgba(248, 106, 24, 0.10); 
+            color: var(--ing-orange-dark); 
+            border: 1px solid rgba(248, 106, 24, 0.14); 
+        }
+
+        .status-card {
+            background: linear-gradient(135deg, rgba(248,106,24,0.09), rgba(255,255,255,0.82) 35%), linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.78));
+            border: 1px solid rgba(226, 232, 240, 0.9); 
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.06);
+        }
+    </style>
+    
+</head>
+<body class="min-h-screen text-slate-900 py-10 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-6xl mx-auto space-y-12">
+        
+        <!-- Header -->
+        <header class="border-b border-slate-200 pb-5">
+            <h1 class="text-3xl font-black text-slate-900">Belgian Gazette Lens</h1>
+            <p class="text-slate-500 mt-1 text-sm">UI Component Catalog & Inspector (Static Preview with Dummy Data)</p>
+        </header>
+
+        <!-- SECTION 1: Company Insights Card (from renderCompanyInsights) -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-2">
+                <span class="bg-slate-200 text-slate-700 text-xs px-2.5 py-1 rounded-md font-bold uppercase">View 1</span>
+                <h2 class="text-xl font-bold text-slate-800">Company Insights (Main Results Page)</h2>
+            </div>
+            
+            <div class="status-card rounded-[28px] p-6 md:p-8">
+                <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
+                    <div>
+                        <div class="inline-flex items-center gap-2 rounded-full bg-white/70 border border-orange-100 px-3 py-1 text-xs font-semibold text-orange-700 mb-4">Overview</div>
+                        <h3 class="text-2xl font-bold text-slate-900">Company Insights</h3>
+                    </div>
+                </div>
+
+                <!-- Simulating filled grid output from renderCompanyInsights() -->
+                <div class="mt-6 rounded-2xl bg-white/70 border border-slate-200 p-5 md:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">KBO</span>
+                        <span class="text-lg md:text-xl font-bold text-slate-900">0420.968.320</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Bedrijfsnaam</span>
+                        <span class="text-lg md:text-xl font-bold text-slate-900">ING BELGIE NV</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Rechtsvorm</span>
+                        <span class="text-lg font-medium text-slate-700">Naamloze Vennootschap (NV)</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">BTW-nummer</span>
+                        <span class="text-lg font-medium text-slate-700">BE0420968320</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">EUID</span>
+                        <span class="text-base font-medium text-slate-700 break-all">BEKBOBCE.0420.968.320</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Juridische situatie</span>
+                        <span class="text-lg font-medium text-slate-700">Normale toestand • Sinds 12/11/1935</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Maatschappelijk kapitaal</span>
+                        <span class="text-lg font-medium text-slate-700">EUR 1.250.000.000</span>
+                    </div>
+                    <div class="flex flex-col gap-1 lg:col-span-2">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Huidige wettelijke vertegenwoordiging</span>
+                        <span class="text-lg font-medium text-slate-700">Peter Adams, Philippe Wallez, Lieve Mostrey</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Dynamic Structured Cards (from buildStructuredHTML inside the Modal) -->
+        <section class="space-y-6">
+            <div class="flex items-center gap-2">
+                <span class="bg-slate-200 text-slate-700 text-xs px-2.5 py-1 rounded-md font-bold uppercase">View 2</span>
+                <h2 class="text-xl font-bold text-slate-800">Structured Modal Content Blocks (Document Details)</h2>
+            </div>
+
+            <!-- Simulated Sidebar Container inside Modal -->
+            <div class="bg-slate-50 border border-slate-200 rounded-[24px] p-6 lg:p-8 space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <h3 class="text-lg font-bold text-slate-800">Ingezonden Document Analyse</h3>
+                    <p class="text-slate-500 text-xs">De onderstaande elementen worden afhankelijk van de JSON-data door de AI gegenereerd.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- 1. Bestuur & Mandaten Card -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-slate-500 mb-3 pb-2 border-b border-slate-200">Bestuur & Mandaten</h4>
+                        <div class="space-y-3">
+                            <!-- Action: IN -->
+                            <div class="flex items-start gap-3">
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border bg-emerald-100 text-emerald-700 border-emerald-200 mt-0.5">IN</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Lieve Mostrey</span>
+                                    <p class="text-sm text-slate-500">Onafhankelijk Bestuurder &middot; 6 jaar</p>
+                                </div>
+                            </div>
+                            <!-- Action: OUT -->
+                            <div class="flex items-start gap-3">
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border bg-red-100 text-red-700 border-red-200 mt-0.5">OUT</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">Michel Tilmant</span>
+                                    <p class="text-sm text-slate-500">Bestuurder &middot; Beëindiging mandaat</p>
+                                </div>
+                            </div>
+                            <!-- Action: RENEWED -->
+                            <div class="flex items-start gap-3">
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border bg-blue-100 text-blue-700 border-blue-200 mt-0.5">RENEWED</span>
+                                <div>
+                                    <span class="font-bold text-slate-800">ACME CONSULTING BV</span> <span class="text-sm text-slate-500">(Vertegenwoordiger: John Doe)</span>
+                                    <p class="text-sm text-slate-500">Zaakvoerder &middot; 4 jaar</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Kapitaal & Aandelen Card -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-slate-500 mb-3 pb-2 border-b border-slate-200">Kapitaal & Aandelen</h4>
+                        <div>
+                            <p class="font-bold text-slate-800 mb-2 capitalize">Kapitaalverhoging</p>
+                            <p class="text-sm text-slate-700"><strong>Wijziging:</strong> € +50.000,00</p>
+                            <p class="text-sm text-slate-700 font-bold mt-1">Nieuw Totaal Kapitaal: € 250.000,00</p>
+                            <p class="text-sm text-slate-500">Totaal aandelen: 10000</p>
+                            <p class="text-sm text-slate-500 italic mt-3">Kapitaalverhoging door inbreng in natura van softwarelicenties.</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Herstructurering Card (Restructuring Event) -->
+                    <div class="rounded-2xl border border-orange-200 bg-orange-50 p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-orange-600 mb-3 pb-2 border-b border-orange-200">Herstructurering</h4>
+                        <div>
+                            <p class="font-bold text-orange-800 mb-3">Fusie door overneming</p>
+                            
+                            <p class="text-sm text-slate-600 font-bold">Verdwijnende/Splitsende partij(en):</p>
+                            <ul class="list-disc ml-5 text-sm text-slate-700 mb-2">
+                                <li>ALPHA BELGIUM BV (KBO: 0123.456.789)</li>
+                            </ul>
+
+                            <p class="text-sm text-emerald-700 font-bold mt-2">Verkrijgende/Nieuwe partij(en):</p>
+                            <ul class="list-disc ml-5 text-sm text-slate-700">
+                                <li>ING BELGIE NV (KBO: 0420.968.320)</li>
+                            </ul>
+
+                            <div class="mt-4 p-3 bg-white rounded-xl border border-orange-100 text-sm text-slate-700">
+                                De fusie is goedgekeurd overeenkomstig artikel 12:3 van het WVV. Alle activa en passiva gaan over naar de overnemende partij.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Oprichting Card (Incorporation Details) -->
+                    <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-blue-600 mb-3 pb-2 border-b border-blue-200">Oprichting</h4>
+                        <div>
+                            <p class="font-bold text-lg text-blue-900">ACME FINTECH SOLUTIONS BV</p>
+                            <p class="text-sm text-blue-700">Besloten Vennootschap (BV) &middot; Wetstraat 1, 1000 Brussel</p>
+                            <p class="text-sm text-blue-700 mt-1">Startkapitaal: € 18.500</p>
+                            
+                            <p class="text-sm font-bold text-blue-900 mt-4 mb-2">Oprichters:</p>
+                            <div class="space-y-2">
+                                <div class="bg-white p-3 rounded-xl border border-blue-100 text-sm shadow-sm">
+                                    <strong>Jan De Smet</strong> <span class="text-slate-400 ml-1">(°14/08/1985)</span> 
+                                    <div class="text-slate-500 mt-0.5">Veldstraat 45, 9000 Gent</div>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-blue-100 text-sm shadow-sm">
+                                    <strong>Sarah Mertens</strong> <span class="text-slate-400 ml-1">(°22/11/1990)</span> 
+                                    <div class="text-slate-500 mt-0.5">Mechelsesteenweg 102, 2000 Antwerpen</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Einde & Vereffening Card (Liquidation & Closure) -->
+                    <div class="rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-red-600 mb-3 pb-2 border-b border-red-200">Einde & Vereffening</h4>
+                        <div>
+                            <p class="font-bold text-red-700 text-lg mb-2">Opening vereffening</p>
+                            <p class="text-sm text-slate-800"><strong>Vereffenaar:</strong> Marc Goethals</p>
+                            <p class="text-xs text-slate-500">Minderbroedersstraat 12, 3000 Leuven</p>
+                            <p class="text-sm text-slate-800 mt-3"><strong>Bewaarplaats boeken:</strong><br><span class="text-slate-600">Kantoor Advocaten associatie Leuven, Bondgenotenlaan 50</span></p>
+                        </div>
+                    </div>
+
+                    <!-- 6. Identiteit & Maatschappelijke Zetel Card -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-slate-500 mb-3 pb-2 border-b border-slate-200">Identiteit & Maatschappelijke Zetel</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider mb-1">Nieuwe Naam</span>
+                                <p class="font-bold text-lg text-slate-800">ING ASSET MANAGEMENT BELGIUM</p>
+                            </div>
+                            <hr class="border-slate-100" />
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider mb-1">Nieuwe Maatschappelijke Zetel</span>
+                                <p class="font-bold text-slate-800">Marnixlaan 24, 1000 Brussel</p>
+                                <p class="text-xs text-slate-500 mt-1">Vanaf: 01/09/2026</p>
+                            </div>
+                            <hr class="border-slate-100" />
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider mb-1">Nieuwe Rechtsvorm</span>
+                                <p class="font-bold text-slate-800">Besloten Vennootschap (BV)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Maatschappelijk Doel Card (Purpose Changes) -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-slate-500 mb-3 pb-2 border-b border-slate-200">Maatschappelijk Doel</h4>
+                        <div>
+                            <p class="text-sm text-slate-500 italic mb-3">Uitbreiding van het maatschappelijk doel met digitale financiële diensten en softwareontwikkeling.</p>
+                            <ul class="list-disc ml-4 text-sm text-slate-700 space-y-1">
+                                <li>Het ontwikkelen van mobiele bankapplicaties voor derden.</li>
+                                <li>Het verlenen van advies inzake crypto-activa en blockchaintoepassingen.</li>
+                                <li>Ondersteuning bij het implementeren van geautomatiseerde betalingsgateways.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 8. Statuten Card (Statute Changes) -->
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-slate-500 mb-3 pb-2 border-b border-slate-200">Statuten</h4>
+                        <div>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded text-xs font-bold border border-emerald-200">✓ WVV/CSA Compliant</span>
+                                <span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-xs font-bold border border-indigo-200">✓ Gecoördineerd</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-700 mb-1">Afwijkende regels:</p>
+                            <ul class="list-disc ml-4 text-sm text-slate-600 space-y-1">
+                                <li>De vennootschap wordt vertegenwoordigd door twee bestuurders die gezamenlijk handelen.</li>
+                                <li>Overdracht van aandelen is onderworpen aan de instemming van minstens 75% van de stemgerechtigde effecten.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>
