@@ -1,75 +1,92 @@
-import PixelBlast from './PixelBlast'
+import { Reveal, ScreenshotFrame } from './ui'
 import heroScreenshot from '../../temp_screenshot_hero.png'
-
-function MockResult() {
-  return (
-    <div className="reveal relative mx-auto mt-16 w-full max-w-4xl">
-      {/* soft glow behind the card */}
-      <div className="absolute -inset-x-8 -top-8 bottom-0 -z-10 rounded-[2rem] bg-gradient-to-b from-orange-400/30 via-sky-100/30 to-transparent blur-2xl" />
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5">
-        {/* window bar */}
-        <div className="flex items-center gap-2 border-b border-slate-100 bg-slate-50/80 px-4 py-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
-          <span className="ml-3 rounded-md bg-white px-3 py-1 text-xs text-slate-400 ring-1 ring-slate-200">
-            begalens.ing.com
-          </span>
-        </div>
-
-        <div className="aspect-[16/9] overflow-hidden bg-slate-50">
-          <img
-            src={heroScreenshot}
-            alt="BeGaLens application preview"
-            className="h-full w-full object-cover object-top"
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
 
 export default function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pt-36 pb-20 sm:pt-44">
-      {/* pixel background: white base with orange pixels (sits above the white, below the text) */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-white">
-        <PixelBlast
-          color="#fff4e3"
-          pixelSize={5}
-          patternScale={3}
-          patternDensity={1.2}
-          speed={3}
-          edgeFade={0.25}
-          enableRipples={false}
-          transparent
-        />
+    <section id="top" className="relative overflow-hidden pt-32 pb-24 sm:pt-40 sm:pb-32">
+      {/* Backdrop: graph paper fading out downwards, with a warm wash behind the frame */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="grid-paper fade-bottom absolute inset-0" />
+        <div className="absolute -right-40 -top-40 h-[42rem] w-[42rem] rounded-full bg-[radial-gradient(circle,rgba(255,98,0,0.10),transparent_62%)]" />
+        <div className="absolute -left-56 top-24 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(20,38,58,0.05),transparent_65%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
-        <h1 className="reveal mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight text-slate-900 sm:text-6xl">
-          Investigating Belgian Gazette
-          <br className="hidden sm:block" /> Publications{' '}
-          <span className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
-            made easier.
-          </span>
-        </h1>
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
+          {/* Copy */}
+          <div className="lg:col-span-6">
+            <Reveal
+              as="h1"
+              delay={0}
+              className="text-[2.6rem] leading-[1.04] text-ink sm:text-5xl lg:text-[3.35rem]"
+            >
+              Investigating publications,
+              <br />
+              at a{' '}
+              <span className="relative inline-block whitespace-nowrap">
+                larger scale
+                <span
+                  aria-hidden
+                  className="rule-draw absolute -bottom-1 left-0 h-[5px] w-full rounded-full bg-ing/85"
+                  style={{ '--rv-delay': '680ms' }}
+                />
+              </span>
+            </Reveal>
 
-        <p className="reveal mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-600">
-          BeGaLens turns dense Belgian Gazette filings into clear, business-level summaries powered by large
-          language models. Find the signal in every publication in seconds, not minutes.
-        </p>
+            <Reveal
+              as="p"
+              delay={210}
+              className="mt-7 max-w-xl text-lg leading-relaxed text-ink-soft"
+            >
+              BeGaLens pulls every Belgian Official Gazette publication filed under a company
+              number, analyses them all at once, and hands back the business events that changed
+              the company. No more opening filings one at a time to find out what happened.
+            </Reveal>
 
-        <div className="reveal mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a href="#" className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-slate-900/10 transition-colors hover:bg-slate-700 sm:w-auto">
-            Request access
-          </a>
-          <a href="#categories" className="w-full rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 sm:w-auto">
-            See what we extract
-          </a>
+            <Reveal delay={300} className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <a
+                href="#access"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-ing px-6 py-3.5 text-[15px] font-bold text-white shadow-[0_10px_28px_-12px_rgba(255,98,0,0.85)] transition-colors hover:bg-ing-deep"
+              >
+                Request access
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h13m-5-6 6 6-6 6" />
+                </svg>
+              </a>
+              <a
+                href="#flow"
+                className="inline-flex items-center justify-center rounded-full border border-line bg-white px-6 py-3.5 text-[15px] font-bold text-ink transition-colors hover:border-ink-mute/50 hover:bg-canvas"
+              >
+                See how it works
+              </a>
+            </Reveal>
+
+            <Reveal as="p" variant="fade" delay={380} className="mt-6 text-sm text-ink-mute">
+              Built inside ING, for the analysts who read these filings for a living.
+            </Reveal>
+          </div>
+
+          {/* Application screenshot, bleeding past the right edge */}
+          <div className="lg:col-span-6">
+            <Reveal variant="rise" delay={260} className="relative lg:-mr-20 xl:-mr-32">
+              <ScreenshotFrame aspect="1671 / 895" url="begalens.ing.net">
+                <img
+                  src={heroScreenshot}
+                  alt="BeGaLens analysis view for a single company number"
+                  className="h-full w-full object-cover object-top"
+                />
+              </ScreenshotFrame>
+            </Reveal>
+          </div>
         </div>
-
-        <MockResult />
       </div>
     </section>
   )
